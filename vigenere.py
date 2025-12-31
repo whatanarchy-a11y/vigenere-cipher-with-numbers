@@ -6,12 +6,12 @@ def encode(word, key):
     l3 = list('[\\]^_`')
     
     for i in range(len(word)):
-        # 1. 공백 처리: 공백은 암호화하지 않고 그대로 둠
+        # 1. DO NOT encode spaces; keep them as is 
         if word[i] == ' ':
             new_word += ' '
             continue
             
-        # 2. 나머지 문자 처리
+        # 2. Handle other characters
         if word[i].isupper():
             stddisp = 65
             mod = 26
@@ -31,7 +31,7 @@ def encode(word, key):
             stddisp = 32
             mod = 6
         else:
-            # 정의되지 않은 다른 문자도 그냥 그대로 둠 (안전장치)
+            # LEAVE other characters unchanged
             new_word += word[i]
             continue
 
@@ -49,12 +49,12 @@ def decode(word, key):
     l3 = list('[\\]^_`')
     
     for i in range(len(word)):
-        # 1. 공백 처리: 공백은 복호화하지 않고 그대로 둠
+        # 1. DO NOT decode spaces; keep them as is
         if word[i] == ' ':
             decoded_word += ' '
             continue
 
-        # 2. 나머지 문자 처리
+        # 2. Handle other characters
         if word[i].isupper():
             stddisp = 65
             mod = 26
@@ -79,7 +79,7 @@ def decode(word, key):
         
         row = ord(word[i]) - stddisp
         col = ord(key[i % len(key)]) - stddisp
-        # 복호화는 뺄셈 (-)
+        # Decoding formula
         decoded_word += chr(stddisp + (row - col) % mod)
             
     return decoded_word
