@@ -1,15 +1,17 @@
-
-__author__ = 'yoav'
-
-
-
-def encode(word,key):
+def encode(word, key):
     new_word = ""
     key = key.lower()
     l1 = list('!"#$%&()\'*+,-./')
     l2 = list(':;<=>?@')
     l3 = list('[\\]^_`')
+    
     for i in range(len(word)):
+        # 1. 공백 처리: 공백은 암호화하지 않고 그대로 둠
+        if word[i] == ' ':
+            new_word += ' '
+            continue
+            
+        # 2. 나머지 문자 처리
         if word[i].isupper():
             stddisp = 65
             mod = 26
@@ -28,23 +30,31 @@ def encode(word,key):
         elif word[i] in l3:
             stddisp = 32
             mod = 6
-        print("-------------s")
-        print(stddisp,mod)
+        else:
+            # 정의되지 않은 다른 문자도 그냥 그대로 둠 (안전장치)
+            new_word += word[i]
+            continue
+
         row = ord(word[i]) - stddisp
-        col = ord(key[i%len(key)]) - stddisp
-        print(stddisp + (row+col)%mod)
-        print(row+col)
-        print((row+col)%mod)
-        new_word += chr(stddisp + (row+col) % mod)
+        col = ord(key[i % len(key)]) - stddisp
+        new_word += chr(stddisp + (row + col) % mod)
+            
     return new_word
 
-def decode(word,key):
+def decode(word, key):
     decoded_word = ""
     key = key.lower()
     l1 = list('!"#$%&()\'*+,-./')
     l2 = list(':;<=>?@')
     l3 = list('[\\]^_`')
+    
     for i in range(len(word)):
+        # 1. 공백 처리: 공백은 복호화하지 않고 그대로 둠
+        if word[i] == ' ':
+            decoded_word += ' '
+            continue
+
+        # 2. 나머지 문자 처리
         if word[i].isupper():
             stddisp = 65
             mod = 26
@@ -63,29 +73,34 @@ def decode(word,key):
         elif word[i] in l3:
             stddisp = 32
             mod = 6
+        else:
+            decoded_word += word[i]
+            continue
+        
         row = ord(word[i]) - stddisp
-        col = ord(key[i%len(key)]) - stddisp
-        decoded_word += chr(stddisp + (row+col) % mod)
+        col = ord(key[i % len(key)]) - stddisp
+        # 복호화는 뺄셈 (-)
+        decoded_word += chr(stddisp + (row - col) % mod)
+            
     return decoded_word
 
 def main():
     while True:
         print("----------------------")
-        print("1: Encode plain text\n")
-        print("2: Decode encrypted text\n")
+        print("1: Encode plain text")
+        print("2: Decode encrypted text")
         inpt = input("Enter choice: ")
-        if (inpt.isdigit()):
+        
+        if inpt == "1":
             text = input("Enter text: ")
             keyword = input("Enter keyword: ")
-            if inpt == "1":
-                print("Encoded text: " + encode(text,keyword))
-            elif inpt == "2":
-                print("Decoded text: " + decode(text,keyword))
-            else:
-                print("Invalid input")
+            print("Encoded text: " + encode(text, keyword))
+        elif inpt == "2":
+            text = input("Enter text: ")
+            keyword = input("Enter keyword: ")
+            print("Decoded text: " + decode(text, keyword))
         else:
             print("Invalid input")
-
 
 if __name__ == "__main__":
     main()
